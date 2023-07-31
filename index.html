@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo Application</title>
+  <style>
+    .completed {
+      text-decoration: line-through;
+    }
+  </style>  
+</head>
+<body>
+  <div id="todo-app"></div>
+
+  <!-- Templates -->
+  <script id="todo-form-template" type="text/x-handlebars-template">
+    <form>
+      <input type="text" placeholder="What needs to be done?" id="new-todo">
+      <input type="submit" value="Add">
+    </form>
+  </script>
+
+  <script id="todo-item-template" type="text/x-handlebars-template">
+    <input type="checkbox" {{#if completed}}checked{{/if}}>
+    <label>{{description}}</label>
+    <button class="remove">Remove</button>
+  </script>
+
+  <script id="todo-list-template" type="text/x-handlebars-template">
+    <ul></ul>
+  </script>
+
+  <script id="todo-summary-template" type="text/x-handlebars-template">
+    <p>Total: {{total}}</p>
+    <p>Completed: {{completed}}</p>
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/4.1.2/backbone.marionette.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>  
+  <script src="app.js"></script>  
+</body>
+</html>
