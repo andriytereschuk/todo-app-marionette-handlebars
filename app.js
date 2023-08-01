@@ -1,5 +1,5 @@
-// Todo Model
-const Todo = Backbone.Model.extend({
+// Todo List Item Model
+const TodoItemModel = Backbone.Model.extend({
   defaults: {
     description: '',
     completed: false
@@ -12,13 +12,13 @@ const Todo = Backbone.Model.extend({
   }
 });
 
-// Todo Collection
-const TodoList = Backbone.Collection.extend({
-  model: Todo
+// Todo List Collection
+const TodoListCollection = Backbone.Collection.extend({
+  model: TodoItemModel
 });
 
 // Todo Item View
-const TodoView = Marionette.View.extend({
+const TodoItemView = Marionette.ItemView.extend({
   template: Handlebars.compile($('#todo-item-template').html()),
   tagName: 'li',
   className() {
@@ -30,12 +30,12 @@ const TodoView = Marionette.View.extend({
   },
   events: {
     'click @ui.checkbox': 'toggle',
-    'click @ui.removeBtn': 'remove'
+    'click @ui.removeBtn': 'delete'
   },
-  toggle: function() {
+  toggle() {
     this.model.toggle();
   },
-  remove() {
+  delete() {
     this.model.destroy();
   },
   modelEvents: {
@@ -45,7 +45,7 @@ const TodoView = Marionette.View.extend({
 
 // Todo List View
 const TodoListView = Marionette.CollectionView.extend({
-  childView: TodoView,
+  childView: TodoItemView,
   tagName: 'ul',
   collectionEvents: {
     'change': 'render'
@@ -53,7 +53,7 @@ const TodoListView = Marionette.CollectionView.extend({
 });
 
 // Todo Form View
-const TodoFormView = Marionette.View.extend({
+const TodoFormView = Marionette.ItemView.extend({
   template: Handlebars.compile($('#todo-form-template').html()),
   events: {
     'submit form': 'onFormSubmit'
@@ -61,18 +61,18 @@ const TodoFormView = Marionette.View.extend({
   onFormSubmit(e) {
     e.preventDefault();
     const $input = this.$('#new-todo');
-    this.collection.add({ description: $input.val() });
+    this.collection.add(new TodoItemModel({ description: $input.val() }));
     $input.val('');
   }
 });
 
 // Summary View
-const SummaryView = Marionette.View.extend({
+const SummaryView = Marionette.ItemView.extend({
   template: Handlebars.compile($('#todo-summary-template').html()),
   collectionEvents: {
     'all': 'render'
   },
-  templateContext() {
+  templateHelpers() {
     return {
       total: this.collection.length,
       completed: this.collection.where({ completed: true }).length
@@ -81,23 +81,26 @@ const SummaryView = Marionette.View.extend({
 });
 
 // Todo App Layout
-const TodoApp = Marionette.View.extend({
+const TodoApp = Marionette.LayoutView.extend({
   el: '#todo-app',
-  template: _.template('<div id="form-region"></div><div id="list-region"></div><div id="summary-region"></div>'),
+  template: _.template(`
+    <div id="form-region"></div>
+    <div id="list-region"></div>
+    <div id="summary-region"></div>`),
   regions: {
     form: '#form-region',
     list: '#list-region',
     summary: '#summary-region'
   },
   onRender() {
-    this.showChildView('form', new TodoFormView({ collection: this.collection }));
-    this.showChildView('list', new TodoListView({ collection: this.collection }));
-    this.showChildView('summary', new SummaryView({ collection: this.collection }));
+    this.getRegion('form').show(new TodoFormView({ collection: this.collection }));
+    this.getRegion('list').show(new TodoListView({ collection: this.collection }));
+    this.getRegion('summary').show(new SummaryView({ collection: this.collection }));
   }
 });
 
 // Instantiate the todo list and the todo app
-const todos = new TodoList();
+const todos = new TodoListCollection();
 const app = new TodoApp({ collection: todos });
 
 // Render the app
