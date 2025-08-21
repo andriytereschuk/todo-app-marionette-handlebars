@@ -1,8 +1,8 @@
 # todo-app-marionette-handlebars
 
-Sample app to demonstrate basic Marionette.js features.
+**Sample app** to demonstrate basic Marionette.js features.
 
-There are here the same versions of Backbone and Marionette as are used currently (August 2023) on Macys website. 
+There are here the same versions of Backbone and Marionette as are used currently (August 2023) on Ma**s website. 
 * backbone: 1.2.3
 * backbone.marionette: 2.4.4
 
